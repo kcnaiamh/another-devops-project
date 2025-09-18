@@ -28,78 +28,69 @@ def gen_password(n: int) -> str:
     return ''.join(password_list)
 
 def create_ssh_key(key_name):
-    """Create or use an existing SSH key pair"""
-    try:
-        existing_key = aws.ec2.get_key_pair(key_name=key_name)
-        print(f"Using existing AWS key pair: {existing_key.key_name}")
-        return None  # Use existing key
+    """Create an SSH key pair"""
 
-    except:
-        print(f"Key pair '{key_name}' not found. Creating a new one...")
+    # Generate a private key (only if Pulumi actually needs it)
+    ssh_key = tls.PrivateKey(
+        "generated-key",
+        algorithm="RSA",
+        rsa_bits=4096,
+    )
 
-        ssh_key = tls.PrivateKey(
-            key_name,
-            algorithm="RSA",
-            rsa_bits=4096,
-        )
+    # Declare the AWS KeyPair as a managed Pulumi resource
+    aws_key = aws.ec2.KeyPair(
+        key_name,
+        key_name=key_name,
+        public_key=ssh_key.public_key_openssh
+    )
 
-        aws_key = aws.ec2.KeyPair(
-            key_name,
-            key_name=key_name,
-            public_key=ssh_key.public_key_openssh
-        )
+    # Save private key locally
+    private_key_path = os.path.join(os.path.expanduser("~"), '.ssh', f'{key_name}.id_rsa')
 
-        # Save private key locally
-        private_key_path = os.path.expanduser(f"~/.ssh/{key_name}.id_rsa")
+    def write_private_key(private_key_pem):
+        os.makedirs(os.path.dirname(private_key_path), exist_ok=True)
+        with open(private_key_path, "w") as private_key_file:
+            private_key_file.write(private_key_pem)
+        os.chmod(private_key_path, 0o600)
 
-        def write_private_key(private_key_pem):
-            with open(private_key_path, "w") as private_key_file:
-                private_key_file.write(private_key_pem)
-            os.chmod(private_key_path, 0o600)
+    ssh_key.private_key_pem.apply(write_private_key)
 
-        ssh_key.private_key_pem.apply(write_private_key)
-
-        return aws_key
+    return aws_key
 
 def create_config_file(instances, ssh_key_name):
     """Create SSH config file for connecting to instances"""
     def write_config(all_ips):
-        nodejs_ip = all_ips[0]
-        db_ip = all_ips[1]
-        redis_ip = all_ips[2]
-        vault_ip = all_ips[3]
-
         config_content = f'''\
-Host nodejs-server
-    HostName {nodejs_ip}
+Host host1
+    HostName {all_ips[0]}
     User ubuntu
     IdentityFile ~/.ssh/{ssh_key_name}.id_rsa
+    ControlMaster auto
+    ControlPath ~/.ssh/master-%r@%h:%p
+    ControlPersist 10m
 
-Host db-server
-    ProxyJump nodejs-server
-    HostName {db_ip}
+Host host2
+    HostName {all_ips[1]}
     User ubuntu
     IdentityFile ~/.ssh/{ssh_key_name}.id_rsa
+    ControlMaster auto
+    ControlPath ~/.ssh/master-%r@%h:%p
+    ControlPersist 10m
 
-Host redis-server
-    ProxyJump nodejs-server
-    HostName {redis_ip}
+Host host3
+    HostName {all_ips[2]}
     User ubuntu
     IdentityFile ~/.ssh/{ssh_key_name}.id_rsa
-
-Host vault-server
-    ProxyJump nodejs-server
-    HostName {vault_ip}
-    User ubuntu
-    IdentityFile ~/.ssh/{ssh_key_name}.id_rsa
+    ControlMaster auto
+    ControlPath ~/.ssh/master-%r@%h:%p
+    ControlPersist 10m
 '''
-        config_path = os.path.expanduser("~/.ssh/config")
+        config_path = os.path.join(os.path.expanduser("~"), '.ssh', 'config')
         with open(config_path, "w") as config_file:
             config_file.write(config_content)
 
     pulumi.Output.all(
-        instances["nodejs"].public_ip,
-        instances["db"].private_ip,
-        instances["redis"].private_ip,
-        instances["vault"].private_ip
+        instances[0].public_ip,
+        instances[1].public_ip,
+        instances[2].public_ip,
     ).apply(write_config)

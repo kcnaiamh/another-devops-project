@@ -1,11 +1,21 @@
 name: devops-project
-description: A minimal AWS Python Pulumi program
+description: doing some hard shit
 runtime:
   name: python
   options:
     toolchain: pip
-    virtualenv: .env
+    virtualenv: venv
+
 config:
   pulumi:tags:
     value:
       pulumi:template: aws-python
+
+template:
+  config:
+    aws:region:
+      description: AWS region to deploy into
+      default: ap-southeast-1
+    sshKeyName:
+      description: SSH key pair name for the EC2 instance
+      default: master-key

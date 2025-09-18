@@ -1,3 +1,2 @@
-encryptionsalt: v1:A0Du7nuimAE=:v1:ri2dmsa1EDmFZYQz:WPkyPkV+vlXl7kxxxMpYOGF5UKnmLQ==
 config:
-  aws:region: ap-southeast-1
+  devops-project:sshKeyName: master-key
