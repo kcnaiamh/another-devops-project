@@ -1,4 +1,4 @@
-#### Project Overview
+### Project Overview
 
 The goal of this project is to,
 
@@ -8,7 +8,7 @@ The goal of this project is to,
 
 The total deployment is automated through Pulumi (Python), Bash and Makefile.
 
-#### Architecture
+### Architecture
 
 LLD of the infrastructure:
 
@@ -20,7 +20,7 @@ API GW is in Active-Active state in first and second EC2. All the database, with
 
 All microservices are communicating with each other using docker bridge network IP. This is being possible through VXLAN interface.
 
-#### Prerequisites
+### Prerequisites
 
 Before running the project, ensure you have:
 
@@ -29,7 +29,7 @@ Before running the project, ensure you have:
 - **AWS CLI** installed and configured with access and secret token.
 - **Postman** installed.
 
-#### Deployment & Execution
+### Deployment & Execution
 
 > **Attention**: Make sure you have all the prerequisites mentioned previously before proceeding for deployment.
 
@@ -57,7 +57,7 @@ To deploy the infrastructure and services you just need to run 2 commands.
 
 4. **Do the Cleanup**. Run `pulumi destroy --yes --remove` to delete the whole infrastructure. (Be cautious about AWS bill.)
 
-#### Challenges and Solutions
+### Challenges and Solutions
 
 During doing the project, I encountered several challenges. In this section, I'll highlight the most significant ones and how I resolved them.
 
@@ -73,7 +73,7 @@ During doing the project, I encountered several challenges. In this section, I'l
 
 ---
 
-#### Setup Without Pulumi Template
+### Setup Without Pulumi Template
 
 If you want to clone the git repo and want to configure it manually then following this instruction:
 
