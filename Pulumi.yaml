@@ -16,6 +16,3 @@ template:
     aws:region:
       description: AWS region to deploy into
       default: ap-southeast-1
-    ssh_key_name:
-      description: SSH key pair name for the EC2 instance
-      default: master-key
