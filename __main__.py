@@ -1,38 +1,40 @@
 import pulumi
-from network import create_network_infrastructure
-from security import create_security_groups
-from instances import create_instances
-from utils import create_ssh_key, create_config_file
-from configure import update_scripts
-
-# Configuration
-config = pulumi.Config()
-SSH_KEY_NAME = config.require("sshKeyName")
-
-# Create infrastructure components
-aws_key = create_ssh_key(SSH_KEY_NAME)
-
-network = create_network_infrastructure()  # returns vpc, public_subnets[]
-vpc = network["vpc"]
-
-security = create_security_groups(vpc)
-
-instances = create_instances(
-    network=network,
-    security_groups=security,
-    config={
-        "ssh_key_name": SSH_KEY_NAME,
-    }
-)
-
-create_config_file(instances, SSH_KEY_NAME)
-
-pulumi.export('ec2 public ips', [instance.public_ip for instance in instances])
-pulumi.export('ec2 private ips', [instance.private_ip for instance in instances])
+from src.infrastructure.network import create_network_infrastructure
+from src.infrastructure.security import create_security_groups
+from src.infrastructure.compute import create_instances
+from src.utils.helpers import create_ssh_key, create_config_file
+from src.config.update_scripts import update_scripts
 
 
-for i in range(1, 4):
-    update_scripts(f"./scripts/setup-vxlan-host-{i}.sh", instances)
+def main() -> None:
+    """Main function to orchestrate infrastructure deployment."""
+
+    # Load configuration
+    config = pulumi.Config()
+    ssh_key_name = config.require("ssh_key_name")
+    create_key = config.get_bool("create_key")
+
+    # Create ssh key to access EC2s
+    if create_key:
+        create_ssh_key(ssh_key_name)
+
+    network_stack = create_network_infrastructure()  # returns vpc, public_subnets[]
+    security_stack = create_security_groups(network_stack["vpc"])
+
+    # Compute stack
+    instances = create_instances(
+        network=network_stack,
+        security_groups=security_stack,
+    )
+
+    create_config_file(instances, ssh_key_name)
+
+    pulumi.export("ec2 public ips", [instance.public_ip for instance in instances])
+    pulumi.export("ec2 private ips", [instance.private_ip for instance in instances])
+
+    for i in range(1, 4):
+        update_scripts(f"./scripts/setup-vxlan-host-{i}.sh", instances)
 
 
-# configure_ec2s_with_cloud_init_check(SSH_KEY_NAME, instances)
+if __name__ == "__main__":
+    main()

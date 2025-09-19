@@ -1,5 +1,5 @@
-name: devops-project
-description: doing some hard shit
+name: vxlan-project
+description: Design and implement a multi-datacenter microservices platform using Docker containers, VXLAN networking, and automation through Makefiles. This project simulates a distributed system spanning three datacenters with cross-datacenter service communication and load balancing capabilities.
 runtime:
   name: python
   options:
@@ -16,6 +16,6 @@ template:
     aws:region:
       description: AWS region to deploy into
       default: ap-southeast-1
-    sshKeyName:
+    ssh_key_name:
       description: SSH key pair name for the EC2 instance
       default: master-key

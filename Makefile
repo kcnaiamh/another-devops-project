@@ -1,7 +1,8 @@
-.PHONY: build run keepad
+.PHONY: provision-infra configure-infra build cleanup
 
 provision-infra:
 	pulumi up -y
+	pulumi config set create_key false
 # 10 second delay
 	sleep 10
 
@@ -42,9 +43,9 @@ configure-infra: provision-infra
 	ssh host3 "tar -xzvf host_3.tar.gz"
 
 # 10 second delay
-	sleep 10
+	sleep 180
 
-build: configure-infra
+build:
 # Run all databases on host3 machine
 	ssh host3 "cd ~/host_3/ && docker compose up -d"
 # Run microservices
@@ -53,6 +54,7 @@ build: configure-infra
 
 cleanup:
 	pulumi destroy -y
+	pulumi config set create_key true
 	bash ./scripts/cleanup.sh
 
 	@echo "[+] cleanup done!"
