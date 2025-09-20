@@ -74,11 +74,11 @@ To deploy the infrastructure and services you just need to run 2 commands.
 
 While doing the project, I encountered several challenges. In this section, I'll highlight the most significant ones and how I resolved them.
 
-- [1. Implementing with 3 different VNIs — Disaster](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#1-implementing-with-3-different-vnis--disaster)
-- [2. Using VRRP protocol with keepalived for single GW IP](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#2-using-vrrp-protocol-with-keepalived-for-single-gw-ip)
-- [3. Multiple docker-compose file, but same network!](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#3-multiple-docker-compose-file-but-same-network)
-- [4. SSH keypair gets deleted when I do pulumi up -y again!](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#4-ssh-keypair-gets-deleted-when-i-do-pulumi-up--y-again)
-- [5. SSH Multiplexing – breaking docker commands!](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#5-ssh-multiplexing--breaking-docker-commands)
+1. [Implementing with 3 different VNIs — Disaster](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#1-implementing-with-3-different-vnis--disaster)
+2. [Using VRRP protocol with keepalived for single GW IP](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#2-using-vrrp-protocol-with-keepalived-for-single-gw-ip)
+3. [Multiple docker-compose file, but same network!](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#3-multiple-docker-compose-file-but-same-network)
+4. [SSH keypair gets deleted when I do pulumi up -y again!](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#4-ssh-keypair-gets-deleted-when-i-do-pulumi-up--y-again)
+5. [SSH Multiplexing – breaking docker commands!](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#5-ssh-multiplexing--breaking-docker-commands)
 
 ### 1. Implementing with 3 different VNIs — Disaster
 
