@@ -1,14 +1,14 @@
-### Project Overview
+## Project Overview
 
 The goal of this project is to,
 
 1. Provision 3 EC2 instance with separate subnets inside a custom VPC.
-2. Configure 3 EC2 instance with VxLAN so that containers running inside these EC2 can communicate with each other with VxLAN overlay.
+2. Configure 3 EC2 instance with VxLAN so that containers running inside these EC2s can communicate with each other with VxLAN overlay.
 3. Deploy E-commerce microservice containers across the EC2 instances.
 
 The total deployment is automated through Pulumi (Python), Bash and Makefile.
 
-### Architecture
+## Architecture
 
 LLD of the infrastructure:
 
@@ -22,7 +22,7 @@ All microservices are communicating with each other using docker bridge network 
 
 **Note:** I've used [poridhioss/E-commerce-Microservices](https://github.com/poridhioss/E-commerce-Microservices) project to deploy in this infrastructure.
 
-### Prerequisites
+## Prerequisites
 
 Before running the project, ensure you have:
 
@@ -32,9 +32,9 @@ Before running the project, ensure you have:
 - **Postman** installed.
 - **Make** uitlity instaled
 
-### Deployment & Execution
+## Deployment & Execution
 
-> **Attention**: Make sure you have all the prerequisites mentioned previously before proceeding for deployment.
+> ⚠️ **Attention**: Make sure you have all the prerequisites mentioned previously before proceeding for deployment.
 
 To deploy the infrastructure and services you just need to run 2 commands.
 
@@ -68,9 +68,9 @@ To deploy the infrastructure and services you just need to run 2 commands.
    pulumi stack output
    ```
 
-4. **Do the Cleanup**. Run `make cleanup` to delete the whole infrastructure. (Be cautious about AWS bill.)
+4. 🚨 **Do the Cleanup**. Run `make cleanup` to delete the whole infrastructure. (Be cautious about AWS bill.)
 
-### Challenges and Solutions
+## Challenges and Solutions
 
 While doing the project, I encountered several challenges. In this section, I'll highlight the most significant ones and how I resolved them.
 
@@ -147,8 +147,8 @@ Now, for the second challenge, I specified IP address for all the containers in 
 
 ```yaml
 networks:
-	br-vxlan:
-		ipv4_address: 10.10.0.5 # IP will be unique for each container
+  br-vxlan:
+    ipv4_address: 10.10.0.5 # IP will be unique for each container
 ```
 
 As the IPs are pre-specified so I can use `/etc/hosts` to map container name and IP address in all the EC2s. This way, each container can call other containers by name, not IP address. And this solves the third challenge.
@@ -199,7 +199,7 @@ I remove the multiplexing part because:
 1. Windows openssh binary doesn't support ssh multiplexing.
 2. I don't want to modify just to run in \*nix based system.
 
-### Setup Without Pulumi Template
+## Setup Without Pulumi Template
 
 If you want to clone the git repo and want to configure it manually, then follow this instruction:
 
