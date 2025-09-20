@@ -18,9 +18,9 @@ configure-infra: provision-infra
 	scp ./scripts/update-hostfile.sh host3:~
 
 # Execute update-hostfile.sh script
-	ssh host1 "sudo ./update-hostfile.sh"
-	ssh host2 "sudo ./update-hostfile.sh"
-	ssh host3 "sudo ./update-hostfile.sh"
+	ssh host1 "sudo bash update-hostfile.sh"
+	ssh host2 "sudo bash update-hostfile.sh"
+	ssh host3 "sudo bash update-hostfile.sh"
 
 # Execute vxlan setup script
 	ssh host1 "sed -i 's/\r//' setup-vxlan-host-1.sh && bash ~/setup-vxlan-host-1.sh"&
@@ -42,10 +42,10 @@ configure-infra: provision-infra
 	ssh host2 "tar -xzvf host_2.tar.gz"
 	ssh host3 "tar -xzvf host_3.tar.gz"
 
-# 10 second delay
-	sleep 180
+# 300 second delay
+	sleep 300
 
-build:
+build: configure-infra
 # Run all databases on host3 machine
 	ssh host3 "cd ~/host_3/ && docker compose up -d"
 # Run microservices

@@ -33,7 +33,7 @@ def main() -> None:
     pulumi.export("ec2 private ips", [instance.private_ip for instance in instances])
 
     for i in range(1, 4):
-        update_scripts(f"./scripts/setup-vxlan-host-{i}.sh", instances)
+        update_scripts(f"../scripts/setup-vxlan-host-{i}.sh", instances)
 
 
 if __name__ == "__main__":
