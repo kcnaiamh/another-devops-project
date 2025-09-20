@@ -2,6 +2,7 @@ name: vxlan-project
 description: Design and implement a multi-datacenter microservices platform using Docker containers, VXLAN networking, and automation through Makefiles. This project simulates a distributed system spanning three datacenters with cross-datacenter service communication and load balancing capabilities.
 runtime:
   name: python
+  main: src
   options:
     toolchain: pip
     virtualenv: venv
