@@ -88,10 +88,6 @@ Host host{i}
 """.strip("\n")
             )
 
-# ControlMaster auto
-# ControlPath ~/.ssh/master-%r@%h:%p
-# ControlPersist 10m
-
         config_content = "\n\n".join(config_lines)
 
         config_path = os.path.join(os.path.expanduser("~"), ".ssh", "config")
