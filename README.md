@@ -74,7 +74,13 @@ To deploy the infrastructure and services you just need to run 2 commands.
 
 While doing the project, I encountered several challenges. In this section, I'll highlight the most significant ones and how I resolved them.
 
-#### 1. Implementing with 3 different VNIs — Disaster
+- [1. Implementing with 3 different VNIs — Disaster](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#1-implementing-with-3-different-vnis--disaster)
+- [2. Using VRRP protocol with keepalived for single GW IP](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#2-using-vrrp-protocol-with-keepalived-for-single-gw-ip)
+- [3. Multiple docker-compose file, but same network!](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#3-multiple-docker-compose-file-but-same-network)
+- [4. SSH keypair gets deleted when I do pulumi up -y again!](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#4-ssh-keypair-gets-deleted-when-i-do-pulumi-up--y-again)
+- [5. SSH Multiplexing – breaking docker commands!](https://github.com/kcnaiamh/distributed-microservices-using-vxlan-pulumi-bash-aws?tab=readme-ov-file#5-ssh-multiplexing--breaking-docker-commands)
+
+### 1. Implementing with 3 different VNIs — Disaster
 
 My first architecture was, each EC2 will communicate with other two EC2 using different VTEP (VXLAN interface).
 
@@ -104,7 +110,7 @@ The real problem is having two interface under one bridge. Bridge broadcast the 
 
 Then I changed the design to only use one VNI for all the EC2s.
 
-#### 2. Using VRRP protocol with keepalived for single GW IP
+### 2. Using VRRP protocol with keepalived for single GW IP
 
 If successfully deploying the infra with VXLAN setup, I thought it would be cool to use VRRP with keepalived to use redundant nginx gateway in active-passive state.
 
@@ -120,7 +126,7 @@ I create a hosted zone with two A records with Failover routing policy. If the p
 
 ![](./images/dns-records.png)
 
-#### 3. Multiple docker-compose file, but same network!
+### 3. Multiple docker-compose file, but same network!
 
 After successfully setting up the Active-Passive state of Gateway using Route53, now I got another challenge.
 
@@ -153,7 +159,7 @@ networks:
 
 As the IPs are pre-specified so I can use `/etc/hosts` to map container name and IP address in all the EC2s. This way, each container can call other containers by name, not IP address. And this solves the third challenge.
 
-#### 4. SSH keypair gets deleted when I do `pulumi up -y` again!
+### 4. SSH keypair gets deleted when I do `pulumi up -y` again!
 
 Previously, I was using the following logic for SSH key-pair creation:
 
@@ -175,7 +181,7 @@ This creates a flapping behavior; create on one run, destroy on the next.
 
 To solve this, I used a boolean variable named `create_key`. At first the variable will be `true`. It will allow to call the `create_ssh_key` function. After first run, the variable will be set to `false`. Also, try-except logic is removed.
 
-#### 5. SSH Multiplexing – breaking docker commands!
+### 5. SSH Multiplexing – breaking docker commands!
 
 In `Makefile`, I've used SSH a lot (21 times). Every time, new SSH connection is created. To make the process efficient I planned to do SSH multiplexing. This way I will create one master connection and reuse it again.
 
